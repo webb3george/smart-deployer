@@ -6,10 +6,7 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 import "./IUtilityContract.sol";
 
 contract DeployManager is Ownable {
-
-    constructor() Ownable(msg.sender) {
-
-    }
+    constructor() Ownable(msg.sender) {}
 
     event NewContractAdded(address _contractAddress, uint256 _fee, bool _isActive, uint256 _timestamp);
     event ContractFeeUpdated(address _contractAddress, uint256 _oldFee, uint256 _newFee, uint256 _timestamp);
@@ -30,8 +27,7 @@ contract DeployManager is Ownable {
     error ContractDoesNotExist();
     error DeployFailed();
 
-    function deploy(address _utilityContract, bytes calldata _initData) external payable returns(address) {
-
+    function deploy(address _utilityContract, bytes calldata _initData) external payable returns (address) {
         ContractInfo memory info = contractsData[_utilityContract];
 
         require(info.isActive, ContractNotActive());
@@ -49,18 +45,16 @@ contract DeployManager is Ownable {
         emit NewDeployment(clone, msg.sender, info.fee, block.timestamp);
 
         return clone;
-
     }
 
     function addNewContract(address _contractAddress, uint256 _fee, bool _isActive) external onlyOwner {
         contractsData[_contractAddress] = ContractInfo(_fee, _isActive, block.timestamp);
 
-
         emit NewContractAdded(_contractAddress, _fee, _isActive, block.timestamp);
     }
 
     function updateFee(address _contractAddress, uint256 _newFee) external onlyOwner {
-        require(contractsData[_contractAddress].registeredAt > 0,  ContractDoesNotExist());
+        require(contractsData[_contractAddress].registeredAt > 0, ContractDoesNotExist());
         uint256 _oldFee = contractsData[_contractAddress].fee;
         contractsData[_contractAddress].fee = _newFee;
 
@@ -68,11 +62,9 @@ contract DeployManager is Ownable {
     }
 
     function changeContractStatus(address _contractAddress, bool _isActive) external onlyOwner {
-        require(contractsData[_contractAddress].registeredAt > 0,  ContractDoesNotExist());
+        require(contractsData[_contractAddress].registeredAt > 0, ContractDoesNotExist());
         contractsData[_contractAddress].isActive = _isActive;
 
         emit ContractStatusUpdated(_contractAddress, _isActive, block.timestamp);
     }
-
-
 }
