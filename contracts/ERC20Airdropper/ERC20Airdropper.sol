@@ -6,16 +6,19 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract ERC20Airdropper is IUtilityContract, Ownable {
-    constructor() Ownable(msg.sender) {}
+    constructor() Ownable(msg.sender) payable {}
 
     IERC20 public token;
     uint256 public amount;
     address public treasury;
 
+    uint256 constant public MAX_AIRDROP_BATCH_SIZE = 300;
+
     error AlreadyInitialized();
     error NotEnoughApprovedTokens();
     error ArraysLengthMissmatch();
     error TransferFailed();
+    error BatchSizeExceeded();
 
     modifier NotInitialized() {
         require(!initialized, AlreadyInitialized());
@@ -47,11 +50,17 @@ contract ERC20Airdropper is IUtilityContract, Ownable {
     }
 
     function airdrop(address[] calldata receivers, uint256[] calldata amounts) external onlyOwner {
+        require(receivers.length <= MAX_AIRDROP_BATCH_SIZE, BatchSizeExceeded());
         require(receivers.length == amounts.length, NotEnoughApprovedTokens());
         require(token.allowance(treasury, address(this)) >= amount, NotEnoughApprovedTokens());
 
-        for (uint256 i = 0; i < receivers.length; i++) {
-            require(token.transferFrom(treasury, receivers[i], amounts[i]), TransferFailed());
+        address treasuryAddress = treasury;
+
+        for (uint256 i = 0; i < receivers.length;) {
+            require(token.transferFrom(treasuryAddress, receivers[i], amounts[i]), TransferFailed());
+            unchecked {
+                ++i ;
+            }
         }
     }
 }

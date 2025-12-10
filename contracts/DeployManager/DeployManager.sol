@@ -3,10 +3,11 @@ pragma solidity ^0.8.29;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
-import "./IUtilityContract.sol";
+import "../IUtilityContract.sol";
+import "./IDeployManager.sol";
 
-contract DeployManager is Ownable {
-    constructor() Ownable(msg.sender) {}
+contract DeployManager is IDeployManager, Ownable {
+    constructor() Ownable(msg.sender) payable {}
 
     event NewContractAdded(address _contractAddress, uint256 _fee, bool _isActive, uint256 _timestamp);
     event ContractFeeUpdated(address _contractAddress, uint256 _oldFee, uint256 _newFee, uint256 _timestamp);

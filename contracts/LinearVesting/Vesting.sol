@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Vesting is IUtilityContract, Ownable {
-    constructor() Ownable(msg.sender) {}
+    constructor() Ownable(msg.sender) payable {}
 
     bool private initialized;
     IERC20 public token;
@@ -96,7 +96,7 @@ contract Vesting is IUtilityContract, Ownable {
             minClaimAmount: _minClaimAmount
         });
 
-        allocatedTokens += _totalAmount;
+        allocatedTokens = allocatedTokens + _totalAmount;
 
         emit VestingCreated(_beneficiary, _totalAmount, block.timestamp);
     }
