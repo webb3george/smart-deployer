@@ -39,6 +39,7 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
         return clone;
     }
 
+    /// @inheritdoc IDeployManager
     function addNewContract(address _contractAddress, uint256 _fee, bool _isActive) external override onlyOwner {
         require(AbstractUtilityContract(_contractAddress).supportsInterface(type(IUtilityContract).interfaceId), ContractIsNotUtilityContract());
 
@@ -47,6 +48,7 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
         emit NewContractAdded(_contractAddress, _fee, _isActive, block.timestamp);
     }
 
+    /// @inheritdoc IDeployManager
     function updateFee(address _contractAddress, uint256 _newFee) external override onlyOwner {
         require(contractsData[_contractAddress].registeredAt > 0, ContractDoesNotExist());
         uint256 _oldFee = contractsData[_contractAddress].fee;
@@ -55,6 +57,7 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
         emit ContractFeeUpdated(_contractAddress, _oldFee, _newFee, block.timestamp);
     }
 
+    /// @inheritdoc IDeployManager
     function changeContractStatus(address _contractAddress, bool _isActive) external override onlyOwner {
         require(contractsData[_contractAddress].registeredAt > 0, ContractDoesNotExist());
         contractsData[_contractAddress].isActive = _isActive;
