@@ -47,12 +47,12 @@ contract Vesting is AbstractUtilityContract, Ownable {
     event VestingCreated(address beneficiary, uint256 totalAmount, uint256 creationTime);
     event TokensWithdrawn(address to, uint256 amount, uint256 timestamp);
 
-    modifier NotInitialized() {
+    modifier notInitialized() {
         require(!initialized, AlreadyInitialized());
         _;
     }
 
-    function initialize(bytes memory _initData) external override NotInitialized returns (bool) {
+    function initialize(bytes memory _initData) external override notInitialized returns (bool) {
         (address _tokenAddress, address _owner) = abi.decode(_initData, (address, address));
 
         token = IERC20(_tokenAddress);

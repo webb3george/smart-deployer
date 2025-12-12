@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import "../UtilityContract/IUtilityContract.sol";
+import "../UtilityContract/AbstractUtilityContract.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ERC1155Airdropper is IUtilityContract, Ownable {
+contract ERC1155Airdropper is AbstractUtilityContract, Ownable {
     constructor() payable Ownable(msg.sender) {}
 
     uint256 public constant MAX_AIRDROP_BATCH_SIZE = 300;
@@ -20,15 +20,18 @@ contract ERC1155Airdropper is IUtilityContract, Ownable {
     error TransferFailed();
     error BatchSizeExceeded();
 
-    modifier NotInitialized() {
+    modifier notInitialized() {
         require(!initialized, AlreadyInitialized());
         _;
     }
 
     bool private initialized;
 
-    function initialize(bytes memory _initData) external override NotInitialized returns (bool) {
-        (address _tokenAddress, address _treasury, address _owner) = abi.decode(_initData, (address, address, address));
+    function initialize(bytes memory _initData) external override notInitialized returns (bool) {
+        (address _deployManager, address _tokenAddress, address _treasury, address _owner) =
+            abi.decode(_initData, (address, address, address, address));
+
+        setDeployManager(_deployManager);
 
         token = IERC1155(_tokenAddress);
         treasury = _treasury;
@@ -39,12 +42,12 @@ contract ERC1155Airdropper is IUtilityContract, Ownable {
         return (true);
     }
 
-    function getInitData(address _tokenAddress, address _treasury, address _owner)
+    function getInitData(address _deployManager, address _tokenAddress, address _treasury, address _owner)
         external
         pure
         returns (bytes memory)
     {
-        return (abi.encode(_tokenAddress, _treasury, _owner));
+        return (abi.encode(_deployManager, _tokenAddress, _treasury, _owner));
     }
 
     function airdrop(address[] calldata receivers, uint256[] calldata amounts, uint256[] calldata tokenIds)
