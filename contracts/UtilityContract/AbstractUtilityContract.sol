@@ -15,19 +15,22 @@ abstract contract AbstractUtilityContract is IUtilityContract, ERC165 {
         return true;
     }
 
-    /// @inheritdoc IUtilityContract
     function setDeployManager(address _deployManager) internal virtual {
         require(validateDeployManager(_deployManager), FailedToDeployManager());
         deployManager = _deployManager;
     }
 
-    /// @inheritdoc IUtilityContract
     function validateDeployManager(address _deployManager) internal view returns (bool) {
         require(_deployManager != address(0), DeployManagerCannotBeZeroAddress());
 
         bytes4 interfaceId = type(IDeployManager).interfaceId;
         require(IDeployManager(_deployManager).supportsInterface(interfaceId), NotDeployManager());
         return true;
+    }
+
+    /// @inheritdoc IUtilityContract
+    function getDeployManager() external view virtual override returns (address) {
+        return deployManager;
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {

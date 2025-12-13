@@ -65,6 +65,7 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
         emit ContractStatusUpdated(_contractAddress, _isActive, block.timestamp);
     }
 
+    /// @inheritdoc ERC165
     function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
         return
             interfaceId == type(IDeployManager).interfaceId ||

@@ -8,6 +8,10 @@ import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 /// @notice Interface defines the functions, errors and events for the DeployManager contract
 interface IDeployManager is IERC165 {
 
+    // ----------------------------------------------------------------
+    // Events
+    // ----------------------------------------------------------------
+
     /// @notice Emitted when a new utility contract is added
     /// @param _contractAddress The address of the utility contract
     /// @param _fee The deployment fee(In Wei) for the utility contract
@@ -41,6 +45,10 @@ interface IDeployManager is IERC165 {
         uint256 registeredAt;
     }
 
+    // ----------------------------------------------------------------
+    // Errors
+    // ----------------------------------------------------------------
+
     /// @dev Error if the contract is not active
     error ContractNotActive();
 
@@ -58,6 +66,10 @@ interface IDeployManager is IERC165 {
 
     /// @dev Error if the contract is not a utility contract
     error ContractIsNotUtilityContract();
+
+    // ----------------------------------------------------------------
+    // Functions
+    // ----------------------------------------------------------------
 
     /// @notice Deploys a new instance of the specified utility contract
     /// @param _utilityContract The address of the utility contract to deploy
