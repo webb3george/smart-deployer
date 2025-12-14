@@ -27,7 +27,7 @@ interface IUtilityContract is IERC165 {
     /// @return The boolean value indicating whether the initialization was successful
     function initialize(bytes memory _initData) external returns (bool);
 
-    /// @notice Gets address of the deploy manager
+    /// @notice Shows address of the deploy manager
     /// @return address of the deploy manager
     function getDeployManager() external view returns (address);
 }

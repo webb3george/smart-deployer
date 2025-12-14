@@ -14,7 +14,9 @@ import "./IDeployManager.sol";
 contract DeployManager is IDeployManager, Ownable, ERC165 {
     constructor() payable Ownable(msg.sender) {}
 
+    /// @dev Maps deployer address to an array of deployed contracts
     mapping(address => address[]) public deployedContracts;
+    /// @dev Maps a utility contract address to it's params
     mapping(address => ContractInfo) public contractsData;
 
     /// @inheritdoc IDeployManager
@@ -41,7 +43,11 @@ contract DeployManager is IDeployManager, Ownable, ERC165 {
 
     /// @inheritdoc IDeployManager
     function addNewContract(address _contractAddress, uint256 _fee, bool _isActive) external override onlyOwner {
-        require(AbstractUtilityContract(_contractAddress).supportsInterface(type(IUtilityContract).interfaceId), ContractIsNotUtilityContract());
+        require(
+        AbstractUtilityContract(_contractAddress).supportsInterface(type(IUtilityContract).interfaceId), 
+        ContractIsNotUtilityContract()
+        );
+        require(contractsData[_contractAddress].registeredAt == 0, ContractAlreadyRegistered());
 
         contractsData[_contractAddress] = ContractInfo(_fee, _isActive, block.timestamp);
 

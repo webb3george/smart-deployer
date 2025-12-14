@@ -39,10 +39,11 @@ interface IDeployManager is IERC165 {
     /// @param _timestamp The timestamp when the fee was updated
     event NewDeployment(address _contractAddress, address _deployer, uint256 _fee, uint256 _timestamp);
 
+    /// @dev Stores registered contract info
     struct ContractInfo {
-        uint256 fee;
-        bool isActive;
-        uint256 registeredAt;
+        uint256 fee; /// @notice Fee for contract deployment
+        bool isActive; /// @notice Contract Status
+        uint256 registeredAt; /// @notice Timestamp when contract registered
     }
 
     // ----------------------------------------------------------------
@@ -66,6 +67,9 @@ interface IDeployManager is IERC165 {
 
     /// @dev Error if the contract is not a utility contract
     error ContractIsNotUtilityContract();
+
+    /// @dev Error when user tries to register already registered contract
+    error ContractAlreadyRegistered();
 
     // ----------------------------------------------------------------
     // Functions
