@@ -5,10 +5,7 @@ contracts/artifacts
 remix.config.json
 out
 cache
-.gitmodules
 node_modules
 .DS_Store
-yarn.lock
-package.json
 .vscode
 foundry.lock
